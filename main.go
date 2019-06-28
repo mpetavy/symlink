@@ -278,7 +278,10 @@ func run() error {
 					}
 				}
 			} else {
-				isFile := common.IsFile(filename)
+				isFile,err := common.IsFile(filename)
+				if err != nil {
+					return err
+				}
 
 				if isFile && strings.HasSuffix(filename, ".symlink") {
 					err := restoreSymbolicLink(filename)
@@ -301,7 +304,10 @@ func run() error {
 				return fmt.Errorf("not a symbolic symlink: %s", path)
 			}
 		} else {
-			isFile := common.IsFile(path)
+			isFile,err := common.IsFile(path)
+			if err != nil {
+				return err
+			}
 
 			if isFile && strings.HasSuffix(path, ".symlink") {
 				err := restoreSymbolicLink(path)
