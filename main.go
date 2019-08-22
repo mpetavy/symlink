@@ -278,7 +278,7 @@ func run() error {
 					}
 				}
 			} else {
-				isFile,err := common.IsFile(filename)
+				isFile, err := common.IsFile(filename)
 				if err != nil {
 					return err
 				}
@@ -304,7 +304,7 @@ func run() error {
 				return fmt.Errorf("not a symbolic symlink: %s", path)
 			}
 		} else {
-			isFile,err := common.IsFile(path)
+			isFile, err := common.IsFile(path)
 			if err != nil {
 				return err
 			}
@@ -326,6 +326,6 @@ func run() error {
 func main() {
 	defer common.Cleanup()
 
-	common.New(&common.App{"symlink", "1.0.6", "2018", "backup tool for file symbolic links", "mpetavy", common.APACHE, "https://github.com/mpetavy/symlink", false, nil,nil, nil, run, time.Duration(0)}, nil)
+	common.New(&common.App{"symlink", "1.0.6", "2018", "backup tool for file symbolic links", "mpetavy", common.APACHE, "https://github.com/mpetavy/symlink", false, nil, nil, run, time.Duration(0)}, nil)
 	common.Run()
 }
