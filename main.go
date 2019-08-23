@@ -3,14 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/mpetavy/common"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
-
-	"github.com/mpetavy/common"
 )
 
 const (
@@ -25,6 +23,8 @@ var (
 )
 
 func init() {
+	common.Init("symlink", "1.0.6", "2018", "backup tool for file symbolic links", "mpetavy", common.APACHE, "https://github.com/mpetavy/symlink", false, nil, nil, run, 0)
+
 	backup = flag.String("backup", "", "Directory to backup all symbolic links to '*.symlink' files")
 	restore = flag.String("restore", "", "Directory to restore content of '*.symlink' files to symbolic links")
 	output = flag.String("o", "", "Output directory symbolic links/files")
@@ -326,6 +326,5 @@ func run() error {
 func main() {
 	defer common.Cleanup()
 
-	common.New(&common.App{"symlink", "1.0.6", "2018", "backup tool for file symbolic links", "mpetavy", common.APACHE, "https://github.com/mpetavy/symlink", false, nil, nil, run, time.Duration(0)}, nil)
-	common.Run()
+	common.Run(nil)
 }
