@@ -140,7 +140,7 @@ func restoreSymbolicLink(filename string) error {
 		if *output != "" {
 			absPath = filepath.Join(*output, filepath.Base(absPath))
 		} else {
-			cwd, err := common.CurDir()
+			cwd, err := os.Getwd()
 			if err != nil {
 				return err
 			}
