@@ -55,7 +55,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 	if !b {
 		common.Debug("create directory: %s", filepath.Dir(filename))
 
-		err = os.MkdirAll(filepath.Dir(filename), common.DirFileMode)
+		err = os.MkdirAll(filepath.Dir(filename), common.DefaultDirMode)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 
 	common.Debug("symlink: %s -> file: %s", symlinkFilename, filename)
 
-	err = ioutil.WriteFile(filename, []byte(symlinkTarget), common.FileFileMode)
+	err = ioutil.WriteFile(filename, []byte(symlinkTarget), common.DefaultFileMode)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func restoreSymbolicLink(filename string) error {
 	if !b {
 		common.Debug("create directory: %s", filepath.Dir(symlinkFilename))
 
-		err = os.MkdirAll(filepath.Dir(symlinkFilename), common.DirFileMode)
+		err = os.MkdirAll(filepath.Dir(symlinkFilename), common.DefaultDirMode)
 		if err != nil {
 			return err
 		}
@@ -171,7 +171,7 @@ func restoreSymbolicLink(filename string) error {
 		if *createDirectory {
 			common.Debug("create target as directory: %s", absPath)
 
-			err = os.MkdirAll(absPath, common.DirFileMode)
+			err = os.MkdirAll(absPath, common.DefaultDirMode)
 			if err != nil {
 				return err
 			}
@@ -180,7 +180,7 @@ func restoreSymbolicLink(filename string) error {
 		} else {
 			common.Debug("create target as file: %s", absPath)
 
-			f, err := os.OpenFile(absPath, os.O_RDONLY|os.O_CREATE, common.FileFileMode)
+			f, err := os.OpenFile(absPath, os.O_RDONLY|os.O_CREATE, common.DefaultFileMode)
 			if err != nil {
 				return err
 			}
