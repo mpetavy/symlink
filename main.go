@@ -199,7 +199,7 @@ func restoreSymbolicLink(filename string) error {
 		cmd := exec.Command("cmd.exe", "/c", "mklink", "/d", symlinkFilename, symlinkTarget)
 		cmd.Stderr = os.Stderr
 
-		common.Debug("exec: %s", common.ToString(*cmd))
+		common.Debug("exec: %s", common.CmdToString(cmd))
 
 		err := cmd.Run()
 		if err != nil {
