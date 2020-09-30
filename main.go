@@ -23,7 +23,7 @@ var (
 )
 
 func init() {
-	common.Init(false, "1.0.6", "2018", "backup tool for file symbolic links", "mpetavy", fmt.Sprintf("https://github.com/mpetavy/%s", common.Title()), common.APACHE, nil, nil, run, 0)
+	common.Init(false, "1.0.6", "", "2018", "backup tool for file symbolic links", "mpetavy", fmt.Sprintf("https://github.com/mpetavy/%s", common.Title()), common.APACHE, nil, nil, run, 0)
 
 	backup = flag.String("backup", "", "Directory to backup all symbolic links to '*.symlink' files")
 	restore = flag.String("restore", "", "Directory to restore content of '*.symlink' files to symbolic links")
@@ -33,7 +33,7 @@ func init() {
 
 func backupSymbolicLink(symlinkFilename string) error {
 	symlinkTarget, err := os.Readlink(symlinkFilename)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
@@ -48,7 +48,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 	}
 
 	b, err := common.FileExists(filepath.Dir(filename))
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
@@ -56,7 +56,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 		common.Debug("create directory: %s", filepath.Dir(filename))
 
 		err = os.MkdirAll(filepath.Dir(filename), common.DefaultDirMode)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 	}
@@ -66,15 +66,13 @@ func backupSymbolicLink(symlinkFilename string) error {
 	common.Debug("symlink: %s -> file: %s", symlinkFilename, filename)
 
 	err = ioutil.WriteFile(filename, []byte(symlinkTarget), common.DefaultFileMode)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
-	if err == nil {
-		common.Info("backupSymbolicLink: symlink: %s; target: %s; file: %s", symlinkFilename, symlinkTarget, filename)
-	}
+	common.Info("backupSymbolicLink: symlink: %s; target: %s; file: %s", symlinkFilename, symlinkTarget, filename)
 
-	return err
+	return nil
 }
 
 func EvalString(b bool, st string, sf string) string {
@@ -87,7 +85,7 @@ func EvalString(b bool, st string, sf string) string {
 
 func restoreSymbolicLink(filename string) error {
 	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
@@ -103,7 +101,7 @@ func restoreSymbolicLink(filename string) error {
 	common.Debug("file: %s -> symlink: %s", filename, symlinkFilename)
 
 	b, err := common.FileExists(filepath.Dir(symlinkFilename))
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
@@ -111,12 +109,12 @@ func restoreSymbolicLink(filename string) error {
 		common.Debug("create directory: %s", filepath.Dir(symlinkFilename))
 
 		err = os.MkdirAll(filepath.Dir(symlinkFilename), common.DefaultDirMode)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 	} else {
 		b, err = common.FileExists(symlinkFilename)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 
@@ -125,7 +123,7 @@ func restoreSymbolicLink(filename string) error {
 				common.Debug("delete existing symlink: %s", symlinkFilename)
 
 				err = os.Remove(symlinkFilename)
-				if err != nil {
+				if common.Error(err) {
 					return err
 				}
 			} else {
@@ -141,7 +139,7 @@ func restoreSymbolicLink(filename string) error {
 			absPath = filepath.Join(*output, filepath.Base(absPath))
 		} else {
 			cwd, err := os.Getwd()
-			if err != nil {
+			if common.Error(err) {
 				return err
 			}
 
@@ -154,13 +152,13 @@ func restoreSymbolicLink(filename string) error {
 	var isDirectory = false
 
 	b, err = common.FileExists(absPath)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
 	if b {
 		b, err = common.IsDirectory(absPath)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 
@@ -172,7 +170,7 @@ func restoreSymbolicLink(filename string) error {
 			common.Debug("create target as directory: %s", absPath)
 
 			err = os.MkdirAll(absPath, common.DefaultDirMode)
-			if err != nil {
+			if common.Error(err) {
 				return err
 			}
 
@@ -181,11 +179,11 @@ func restoreSymbolicLink(filename string) error {
 			common.Debug("create target as file: %s", absPath)
 
 			f, err := os.OpenFile(absPath, os.O_RDONLY|os.O_CREATE, common.DefaultFileMode)
-			if err != nil {
+			if common.Error(err) {
 				return err
 			}
 			err = f.Close()
-			if err != nil {
+			if common.Error(err) {
 				return err
 			}
 		}
@@ -202,14 +200,14 @@ func restoreSymbolicLink(filename string) error {
 		common.Debug("exec: %s", common.CmdToString(cmd))
 
 		err := cmd.Run()
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 	} else {
 		common.Debug("use GO symlink")
 
 		err := os.Symlink(symlinkTarget, symlinkFilename)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 	}
@@ -232,14 +230,14 @@ func run() error {
 
 	if !filepath.IsAbs(path) {
 		p, err := filepath.Abs(path)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 		path = p
 	}
 
 	b, err := common.FileExists(path)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 	if !b {
@@ -247,7 +245,7 @@ func run() error {
 	}
 
 	isDirectory, err := common.IsDirectory(path)
-	if err != nil {
+	if common.Error(err) {
 		return err
 	}
 
@@ -255,7 +253,7 @@ func run() error {
 
 	if isDirectory && !isSymbolicLink {
 		files, err := ioutil.ReadDir(path)
-		if err != nil {
+		if common.Error(err) {
 			return err
 		}
 
@@ -273,19 +271,19 @@ func run() error {
 
 				if isSymbolicLink {
 					err := backupSymbolicLink(filename)
-					if err != nil {
+					if common.Error(err) {
 						return err
 					}
 				}
 			} else {
 				isFile, err := common.IsFile(filename)
-				if err != nil {
+				if common.Error(err) {
 					return err
 				}
 
 				if isFile && strings.HasSuffix(filename, ".symlink") {
 					err := restoreSymbolicLink(filename)
-					if err != nil {
+					if common.Error(err) {
 						return err
 					}
 				}
@@ -297,7 +295,7 @@ func run() error {
 
 			if isSymbolicLink {
 				err := backupSymbolicLink(path)
-				if err != nil {
+				if common.Error(err) {
 					return err
 				}
 			} else {
@@ -305,13 +303,13 @@ func run() error {
 			}
 		} else {
 			isFile, err := common.IsFile(path)
-			if err != nil {
+			if common.Error(err) {
 				return err
 			}
 
 			if isFile && strings.HasSuffix(path, ".symlink") {
 				err := restoreSymbolicLink(path)
-				if err != nil {
+				if common.Error(err) {
 					return err
 				}
 			} else {
