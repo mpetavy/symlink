@@ -47,12 +47,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 		filename = symlinkFilename
 	}
 
-	b, err := common.FileExists(filepath.Dir(filename))
-	if common.Error(err) {
-		return err
-	}
-
-	if !b {
+	if !common.FileExists(filepath.Dir(filename)) {
 		common.Debug("create directory: %s", filepath.Dir(filename))
 
 		err = os.MkdirAll(filepath.Dir(filename), common.DefaultDirMode)
@@ -100,12 +95,7 @@ func restoreSymbolicLink(filename string) error {
 
 	common.Debug("file: %s -> symlink: %s", filename, symlinkFilename)
 
-	b, err := common.FileExists(filepath.Dir(symlinkFilename))
-	if common.Error(err) {
-		return err
-	}
-
-	if !b {
+	if !common.FileExists(filepath.Dir(symlinkFilename)) {
 		common.Debug("create directory: %s", filepath.Dir(symlinkFilename))
 
 		err = os.MkdirAll(filepath.Dir(symlinkFilename), common.DefaultDirMode)
@@ -113,12 +103,7 @@ func restoreSymbolicLink(filename string) error {
 			return err
 		}
 	} else {
-		b, err = common.FileExists(symlinkFilename)
-		if common.Error(err) {
-			return err
-		}
-
-		if b {
+		if common.FileExists(symlinkFilename) {
 			if common.IsSymbolicLink(symlinkFilename) {
 				common.Debug("delete existing symlink: %s", symlinkFilename)
 
@@ -151,13 +136,8 @@ func restoreSymbolicLink(filename string) error {
 
 	var isDirectory = false
 
-	b, err = common.FileExists(absPath)
-	if common.Error(err) {
-		return err
-	}
-
-	if b {
-		b, err = common.IsDirectory(absPath)
+	if common.FileExists(absPath) {
+		b, err := common.IsDirectory(absPath)
 		if common.Error(err) {
 			return err
 		}
@@ -236,12 +216,8 @@ func run() error {
 		path = p
 	}
 
-	b, err := common.FileExists(path)
-	if common.Error(err) {
-		return err
-	}
-	if !b {
-		return fmt.Errorf("path not found: %s", path)
+	if !common.FileExists(path) {
+		return &common.ErrFileNotFound{path}
 	}
 
 	isDirectory, err := common.IsDirectory(path)
