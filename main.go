@@ -137,12 +137,7 @@ func restoreSymbolicLink(filename string) error {
 	var isDirectory = false
 
 	if common.FileExists(absPath) {
-		b, err := common.IsDirectory(absPath)
-		if common.Error(err) {
-			return err
-		}
-
-		isDirectory = b
+		isDirectory = common.IsDirectory(absPath)
 
 		common.Debug("detect target %s as directory: %v", absPath, isDirectory)
 	} else {
@@ -220,11 +215,7 @@ func run() error {
 		return &common.ErrFileNotFound{path}
 	}
 
-	isDirectory, err := common.IsDirectory(path)
-	if common.Error(err) {
-		return err
-	}
-
+	isDirectory := common.IsDirectory(path)
 	isSymbolicLink := common.IsSymbolicLink(path)
 
 	if isDirectory && !isSymbolicLink {
@@ -252,10 +243,7 @@ func run() error {
 					}
 				}
 			} else {
-				isFile, err := common.IsFile(filename)
-				if common.Error(err) {
-					return err
-				}
+				isFile := common.IsFile(filename)
 
 				if isFile && strings.HasSuffix(filename, ".symlink") {
 					err := restoreSymbolicLink(filename)
@@ -278,10 +266,7 @@ func run() error {
 				return fmt.Errorf("not a symbolic symlink: %s", path)
 			}
 		} else {
-			isFile, err := common.IsFile(path)
-			if common.Error(err) {
-				return err
-			}
+			isFile := common.IsFile(path)
 
 			if isFile && strings.HasSuffix(path, ".symlink") {
 				err := restoreSymbolicLink(path)
