@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mpetavy/common"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -60,7 +59,7 @@ func backupSymbolicLink(symlinkFilename string) error {
 
 	common.Debug("symlink: %s -> file: %s", symlinkFilename, filename)
 
-	err = ioutil.WriteFile(filename, []byte(symlinkTarget), common.DefaultFileMode)
+	err = os.WriteFile(filename, []byte(symlinkTarget), common.DefaultFileMode)
 	if common.Error(err) {
 		return err
 	}
@@ -79,7 +78,7 @@ func EvalString(b bool, st string, sf string) string {
 }
 
 func restoreSymbolicLink(filename string) error {
-	bytes, err := ioutil.ReadFile(filename)
+	bytes, err := os.ReadFile(filename)
 	if common.Error(err) {
 		return err
 	}
@@ -219,7 +218,7 @@ func run() error {
 	isSymbolicLink := common.IsSymbolicLink(path)
 
 	if isDirectory && !isSymbolicLink {
-		files, err := ioutil.ReadDir(path)
+		files, err := os.ReadDir(path)
 		if common.Error(err) {
 			return err
 		}
