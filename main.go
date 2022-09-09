@@ -224,7 +224,7 @@ func run() error {
 		}
 
 		if len(files) == 0 {
-			common.Warn("no symbolic links found in directory: %s", path)
+			common.Warn(fmt.Errorf("no symbolic links found in directory: %s", path))
 
 			return nil
 		}
