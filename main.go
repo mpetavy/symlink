@@ -22,7 +22,7 @@ var (
 )
 
 func init() {
-	common.Init("symlink", "1.0.6", "", "", "2018", "backup tool for file symbolic links", "mpetavy", fmt.Sprintf("https://github.com/mpetavy/%s", common.Title()), common.APACHE, nil, nil, nil, run, 0)
+	common.Init("symlink", "", "", "", "2018", "backup tool for file symbolic links", "mpetavy", fmt.Sprintf("https://github.com/mpetavy/%s", common.Title()), common.APACHE, nil, nil, nil, run, 0)
 
 	backup = flag.String("backup", "", "Directory to backup all symbolic links to '*.symlink' files")
 	restore = flag.String("restore", "", "Directory to restore content of '*.symlink' files to symbolic links")
