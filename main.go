@@ -165,7 +165,7 @@ func restoreSymbolicLink(filename string) error {
 
 	common.Debug("link as %s", EvalString(isDirectory, "directory", "file"))
 
-	if common.IsWindowsOS() && isDirectory {
+	if common.IsWindows() && isDirectory {
 		common.Debug("use Windows 'mklink'")
 
 		cmd := exec.Command("cmd.exe", "/c", "mklink", "/d", symlinkFilename, symlinkTarget)
